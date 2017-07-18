@@ -10,25 +10,12 @@ clone the repo in your home folder and paste the wrapper code to your .bash_alia
 
 ### Wrapper code
 ```bash
-promise_folder="git-promise-wrapper/"
-original_git=`which git`
-git() {
-  if [ "$1" = "promise" ]; then
-    shift
-    python -m "${promise_folder}git-promise.py" "$@"
-  elif [ "$1" = "commit" ]; then
-  	shift
-  	python -m "${promise_folder}git-commit.py" "$@"
-  elif [ "$1" = "fulfill" ]; then
-  	shift
-  	python -m "{promise_folder}git-fulfill.py" "$@"
-  else
-    original_git "$@"
-  fi
-}
+. git-promise-wrapper/promise_wrapper.sh
 ```
 
 ## Usage
+
+### git promise
 
 ```bash
 git promise -f filename [name ...] [-l N [N ...]] [-b N-N [N-N ...]] branchname
@@ -37,3 +24,11 @@ git promise -f filename [name ...] [-l N [N ...]] [-b N-N [N-N ...]] branchname
 * -l is for lines
 * -b is for lines between: N-N: from-to inclusive.
 
+### git fulfill
+```bash
+git fulfill branchname --remove
+```
+merges the promised branch into the parent branch
+
+* checks the promise by default.
+* if --remove is included, promise is removed.

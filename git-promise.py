@@ -1,5 +1,5 @@
 import argparse
-import git
+
 
 parser = argparse.ArgumentParser(description='Promise lines in git. GitVow backbone.')
 
@@ -18,3 +18,4 @@ group.add_argument('-b', '--between', metavar='N-N', dest='filesAndLines', nargs
 args = parser.parse_args()
 
 print args
+
