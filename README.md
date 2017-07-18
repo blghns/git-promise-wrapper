@@ -1,15 +1,29 @@
 # git-promise-wrapper
 
 ## Install
+## Windows
+clone the repo in your C:/Users/username/git-promise-wrapper folder
+copy the wrapper code to your .bash_profile, if you don't have it, you can create it under C:/Users/username/
+
 ## Linux
-download git-promise.py to your home folder and add following code to your .bash_aliases
+clone the repo in your home folder and paste the wrapper code to your .bash_aliases
+
+### Wrapper code
 ```bash
+promise_folder="git-promise-wrapper/"
+original_git=`which git`
 git() {
   if [ "$1" = "promise" ]; then
     shift
-    python -m git-promise.py "$@"
+    python -m "${promise_folder}git-promise.py" "$@"
+  elif [ "$1" = "commit" ]; then
+  	shift
+  	python -m "${promise_folder}git-commit.py" "$@"
+  elif [ "$1" = "fulfill" ]; then
+  	shift
+  	python -m "{promise_folder}git-fulfill.py" "$@"
   else
-    /usr/bin/git "$@"
+    original_git "$@"
   fi
 }
 ```
