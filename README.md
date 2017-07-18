@@ -10,7 +10,7 @@ clone the repo in your home folder and paste the wrapper code to your .bash_alia
 
 ### Wrapper code
 ```bash
-. git-promise-wrapper/promise_wrapper.sh
+. ~/git-promise-wrapper/promise_wrapper.sh
 ```
 
 ## Usage
