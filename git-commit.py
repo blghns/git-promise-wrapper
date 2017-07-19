@@ -5,34 +5,50 @@ gitCommand = "git diff --unified=0 dd91b1e3085a760f099d7667233781ea1dd0ff45 file
 
 
 def checkPromise(fileName):
-	promisedLines = [5, 7]
+	promisedLines = [1,5,7]
 	promisedLinesBetween = ['10-15',]
 	process = subprocess.Popen(gitCommand.split(), stdout=subprocess.PIPE, shell=True)
 	output, error = process.communicate()
-	linesEdited = map(int, output.split())
+	linesEdited = output.split()
+
 	for lineEdited in linesEdited:
-		if not checkLine(lineEdited, promisedLines) and not checkRange(lineEdited, promisedLinesBetween):
-			print "--- Check Lines: "+str(checkLine(lineEdited, promisedLines))
-			print "--- Check Range: "+str(checkRange(lineEdited, promisedLinesBetween))
+		if "," in lineEdited:
+			lineEdited = lineEdited.split(',')
+			if lineEdited[1] == 0:
+				if not checkLine(lineEdited[0]):
+					return False
+			else:
+				lineEdited = lineEdited[0]+'-'+lineEdited[1]
+				for promisedRange in promisedLinesBetween:
+					if not checkRanges(lineEdited, promisedRange):
+						return False
+		elif not checkLine(lineEdited, promisedLines) and not checkPromisedRange(lineEdited, promisedLinesBetween):
 			return False
 	return True
 
 def checkLine(lineEdited, promisedLines):
-	print "checking lines"
-	if not lineEdited in promisedLines:
-		print "Edited: "+str(lineEdited)
+	if not int(lineEdited) in promisedLines:
 		return False
 	return True
 
-def checkRange(lineEdited, promisedLinesBetween):
-	print "checking ranges"
-	for promisedRange in promisedLinesBetween:
+def checkPromisedRange(lineEdited, promisedRange):
+	for promisedRange in promisedRange:
+		linedEdited = int(lineEdited)
+		promisedStart = int(promisedRange.split("-")[0])
+		promisedEnd = int(promisedRange.split("-")[1])
 		range = promisedRange.split("-")
-		if  not int(range[0])-lineEdited <= 0 and int(range[0]) - lineEdited >= 0:
-			print "Edited"+str(lineEdited)
-			print "Promised"+str(promisedRange)
+		if  not promisedStart-linedEdited <= 0 and promisedEnd - linedEdited >= 0:
 			return False
 	return True
+
+def checkRanges(editedRange, promisedRange):
+	promisedStart = int(promisedRange.split("-")[0])
+	promisedEnd = int(promisedRange.split("-")[1])
+	editedStart = int(editedRange.split("-")[0])
+	editedEnd = int(editedRange.split("-")[1])
+	if promisedStart - editedStart <= 0 and promisedEnd - editedEnd >= 0:
+		return True
+	return False
 
 print "Checking if promise was kept..."
 
