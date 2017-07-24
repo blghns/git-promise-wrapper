@@ -1,4 +1,5 @@
 import argparse
+import os
 import subprocess
 
 gitCommand = "git diff --unified=0 dd91b1e3085a760f099d7667233781ea1dd0ff45 file1.py | grep '@@' | awk '{print $2}' | tr -d -"
@@ -7,7 +8,10 @@ gitCommand = "git diff --unified=0 dd91b1e3085a760f099d7667233781ea1dd0ff45 file
 def checkPromise(fileName):
 	promisedLines = [1,5,7]
 	promisedLinesBetween = ['10-15',]
-	process = subprocess.Popen(gitCommand.split(), stdout=subprocess.PIPE, shell=True)
+	process = subprocess.Popen(gitCommand.split(),
+                               cwd=os.getcwd(),
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.PIPE)
 	output, error = process.communicate()
 	linesEdited = output.split()
 
