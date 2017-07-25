@@ -1,6 +1,12 @@
 import helpers.__subprocess as sb
 
 
+def current_hash():
+    hash_command = "git rev-parse HEAD"
+    hash_str = sb.call(hash_command).split("\n")[0]
+    return hash_str
+
+
 def branch_exists(branch_name):
     git_exists_with_name = "git rev-parse --verify --quiet " + branch_name
     output = sb.call(git_exists_with_name)
