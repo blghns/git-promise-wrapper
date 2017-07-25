@@ -27,3 +27,6 @@ if not helpers.git.branch_exists(args.newBranchName):
     helpers.git.commit("New promise for branch: " + args.newBranchName + " is created")
     helpers.git.branch(args.newBranchName)
     print "New promise for branch: " + args.newBranchName + " is created"
+else:
+    # TODO: add a parser option to append to the promised branch
+    print "Promised branch already exists!"

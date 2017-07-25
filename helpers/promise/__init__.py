@@ -37,7 +37,7 @@ def promise_exists():
 
 def create_promise(args):
     hash_command = "git rev-parse HEAD"
-    hash_str = sb.make_call(hash_command).split("\n")[0]
+    hash_str = sb.call(hash_command).split("\n")[0]
     parent = helpers.git.current_branch()
     promise = {"hash": hash_str,
                "parent": parent,

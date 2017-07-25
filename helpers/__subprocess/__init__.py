@@ -2,7 +2,7 @@ import subprocess
 import os
 
 
-def make_call(command):
+def call(command):
     if type(command) is str:
         command = command.split()
     process = subprocess.Popen(command,
