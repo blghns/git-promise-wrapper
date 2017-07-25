@@ -1,6 +1,7 @@
 import json
 import os
 import helpers.__subprocess as sb
+import helpers.git
 
 
 # check if any promise exists,
@@ -37,8 +38,10 @@ def promise_exists():
 def create_promise(args):
     hash_command = "git rev-parse HEAD"
     hash_str = sb.make_call(hash_command).split("\n")[0]
+    parent = helpers.git.current_branch()
     promise = {"hash": hash_str,
-               "branch": args.newBranchName,
+               "parent": parent,
+               "child": args.newBranchName,
                "files": args.files}
     return promise
 

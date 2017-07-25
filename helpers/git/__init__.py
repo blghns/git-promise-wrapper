@@ -26,6 +26,6 @@ def commit(commit_message):
 
 
 def current_branch():
-    git_branch_name = "git branch | grep \\*"
-    name = sb.make_call(git_branch_name)
+    git_branch_name = "git branch"
+    name = next(branch_name for branch_name in sb.make_call(git_branch_name).split("\n") if branch_name[0] == "*")
     return name.split(" ")[1]
