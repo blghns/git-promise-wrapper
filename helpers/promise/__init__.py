@@ -22,7 +22,7 @@ def check_promise_overlaps(promises, promise):
 
 
 def read_promise():
-    with open('data.json') as promise_file:
+    with open('.promise') as promise_file:
         return json.loads(promise_file)
 
 

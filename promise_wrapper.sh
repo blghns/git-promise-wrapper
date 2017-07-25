@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 promise_folder="$HOME/git-promise-wrapper/"
 original_git=`which git`
 git() {
@@ -11,6 +12,6 @@ git() {
   	shift
   	python "${promise_folder}git-fulfill.py" "$@"
   else
-    $original_git "$@"
+    ${original_git} "$@"
   fi
 }
