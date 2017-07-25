@@ -1,6 +1,6 @@
-import os
-import subprocess
 import json
+import os
+import helpers.__subprocess as sb
 
 
 # check if any promise exists,
@@ -18,12 +18,13 @@ import json
 
 
 def check_promise_overlaps(promises, promise):
+    # TODO: implement this function
     pass
 
 
 def read_promise():
     with open('.promise') as promise_file:
-        return json.loads(promise_file)
+        return json.load(promise_file)
 
 
 def promise_exists():
@@ -35,13 +36,7 @@ def promise_exists():
 
 def create_promise(args):
     hash_command = "git rev-parse HEAD"
-    hash_process = subprocess.Popen(hash_command.split(),
-                                    cwd=os.getcwd(),
-                                    stdout=subprocess.PIPE,
-                                    stderr=subprocess.PIPE)
-    hash_str, error = hash_process.communicate()
-    if error:
-        raise error
+    hash_str = sb.make_call(hash_command).split("\n")[0]
     promise = {"hash": hash_str,
                "branch": args.newBranchName,
                "files": args.files}
@@ -53,7 +48,7 @@ def write_promise(args):
     if promise_exists():
         promises = read_promise()
         if check_promise_overlaps(promises, promise):
-            raise Exception("Promise already exists")
+            raise Exception("Some lines are already promised to another branch")
         else:
             promises.append(promise)
     else:
