@@ -14,6 +14,9 @@ class PromiseTester(unittest.TestCase):
         with open("first", "w") as text:
             text.write("first")
         git.add("first")
+        with open("second", "w") as text:
+            text.write("second")
+        git.add("second")
         git.commit("first commit")
         current_hash = git.current_hash()
         args = promise.promise_parser("newBranch -f first -f second -l 1 -b 5-23".split())

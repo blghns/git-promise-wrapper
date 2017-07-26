@@ -35,8 +35,23 @@ def commit(commit_message):
     command = "git commit -m".split() + ["\"" + commit_message + "\""]
     sb.call(command)
 
-
 def current_branch():
     command = "git branch"
     name = next(branch_name for branch_name in sb.call(command).split("\n") if branch_name[0] == "*")
     return name.split(" ")[1]
+
+def is_staged(file_name):
+    command = "git diff --name-only --cached"
+    staged_files =  sb.call(command).split()
+    if file_name in staged_files:
+        return True
+    return False
+
+def get_lines_edited(promise_commit_hash, file_name):
+    command = "git diff --unified=0 %s %s" % (promise_commit_hash, file_name)
+    output = sb.call(command).split('\n')
+    a1 = [el.split() for el in output if el[:2] == "@@"]
+    a2 = [el[1][1:] for el in a1]
+    return a2
+
+
