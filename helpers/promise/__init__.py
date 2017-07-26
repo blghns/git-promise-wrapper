@@ -38,6 +38,9 @@ def promise_exists():
 def create_promise(args):
     hash_str = git.current_hash()
     parent = git.current_branch()
+    if parent == "":
+        raise Exception("Creating promise failed. Current branch has no name."
+                        " If repo is just initialized, create an initial commit.")
     promise = {"hash": hash_str,
                "parent": parent,
                "child": args.newBranchName,
