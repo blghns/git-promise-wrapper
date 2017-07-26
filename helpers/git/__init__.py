@@ -1,8 +1,4 @@
 import helpers.__subprocess as sb
-import subprocess
-import shlex
-
-
 
 
 def current_hash():
@@ -52,15 +48,10 @@ def is_staged(file_name):
     return False
 
 def get_lines_edited(promise_commit_hash, file_name):
-    command = "ls"
-    print sb.call(command)
     command = "git diff --unified=0 %s %s" % (promise_commit_hash, file_name)
-    proc1 = subprocess.Popen(shlex.split(command),stdout=subprocess.PIPE)
-    proc2 = subprocess.Popen(shlex.split("grep '@@'"), stdin=proc1.stdout, stdout=subprocess.PIPE)
-    proc3 = subprocess.Popen(shlex.split("awk '{print $2}'"), stdin=proc2.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    proc4 = subprocess.Popen(shlex.split("tr -d -"), stdin=proc3.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    output, error = proc4.communicate()
-    proc1.stdout.close()
-    proc2.stdout.close()
-    proc3.stdout.close()
-    return proc4.split()
+    output = sb.call(command).split('\n')
+    a1 = [el.split() for el in output if el[:2] == "@@"]
+    a2 = [el[1][1:] for el in a1]
+    return a2
+
+

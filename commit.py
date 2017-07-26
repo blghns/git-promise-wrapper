@@ -6,7 +6,7 @@ from helpers import git
 def check_promise(promise, is_parent):
     promised_files = promise[u'files']
     promise_commit_hash = promise[u'hash']
-    error_message = None
+    error_message = ''
     for file in promised_files:
         file_name = file[u'fileName']
         promised_lines = file[u'lines']
@@ -19,45 +19,64 @@ def check_promise(promise, is_parent):
             status, error_message = check_file(file_name, promised_lines, promised_lines_between, promise_commit_hash)
         if not status:
             return status, error_message
+    return True, ''
 
 def check_parent_promise(file_name):
     if git.is_staged(file_name):
         return False, "%s is promised by a child branch. You cannot commit any changes to it." % file_name
-    return True, None
+    return True, ''
 
 def check_file(file_name, promised_lines, promised_lines_between, promise_commit_hash):
+    print file_name
+    print promised_lines
+    print promised_lines_between
+    error_message = ''
     lines_edited = git.get_lines_edited(promise_commit_hash, file_name)
+    if lines_edited == None:
+        return True, ''
+    if promised_lines == None and promised_lines_between == None:
+        return False, "Lines %s in %s are not promised." % (str(promised_lines), str(promised_lines_between))
 
     for line_edited in lines_edited:
         if "," in line_edited:
             line_edited = line_edited.split(',')
             if line_edited[1] == 0:
-                if not check_line(line_edited[0]):
+                status, error_message = check_line(line_edited[0], promised_lines, file_name)
+                if not status:
                     return False, error_message
-            else:
+            elif not promised_lines_between == None:
                 line_edited = line_edited[0] + '-' + line_edited[1]
                 for promisedRange in promised_lines_between:
-                    if not check_ranges(line_edited, promisedRange):
+                    if not check_ranges(line_edited, promisedRange, file_name)[0]:
                         return False, error_message
-        elif not check_line(line_edited, promised_lines) and not check_promised_range(line_edited, promised_lines_between):
-            return False, error_message
-    return True, None
+            else:
+                line_edited = line_edited[0] + '-' + str(int(line_edited[0])+int(line_edited[1]))
+                return False, "Range %s in %s is not promised." % (line_edited, file_name)
+
+        else:
+            status, error_message = check_line(line_edited, promised_lines, file_name)
+            if not status:
+                return False, error_message
+
+    return True, ''
 
 
 def check_line(line_edited, promised_lines, file_name):
     if not int(line_edited) in promised_lines:
-        return False, "Line %l in %s is not promised." % (line_edited, file_name)
-    return True, None
+        return False, "Line %s in %s is not promised." % (line_edited, file_name)
+    return True, ''
 
 
-def check_promised_range(line_edited, promised_range, file_name):
-    for promised_range in promised_range:
+def check_promised_range(line_edited, promised_ranges, file_name):
+    if promised_ranges == None:
+        return False, "Line %s in %s is not promised." % (line_edited, file_name)
+    for promised_range in promised_ranges:
         lined_edited = int(line_edited)
         promised_start = int(promised_range.split("-")[0])
         promised_end = int(promised_range.split("-")[1])
         if not promised_start - lined_edited <= 0 and promised_end - lined_edited >= 0:
             return False, "Line %s in %s is not promised." % (line_edited, file_name)
-    return True, None
+    return True, ''
 
 
 def check_ranges(edited_range, promised_range, file_name):
@@ -66,10 +85,15 @@ def check_ranges(edited_range, promised_range, file_name):
     edited_start = int(edited_range.split("-")[0])
     edited_end = int(edited_range.split("-")[1])
     if promised_start - edited_start <= 0 <= promised_end - edited_end:
-        return True, None
+        return True, ''
     return False, "Line range %s in %s are not promised." % (edited_range, file_name)
 
+def broken_promise(error_message):
+    print "\nPromise not kept. Changes will not be committed."
+    print "Error Message: %s" % error_message
 
+def kept_promise():
+        print "\nPromise was kept. Committing changes."
 print "Checking if promise was kept..."
 
 promises = promise.read_promise()
@@ -77,14 +101,16 @@ promise_kept = True
 error_message = None
 
 for promise in promises:
-    current_branch = git.current_branch()
-    if promise[u'child'] ==  current_branch:
-        promise_kept, error_message = check_promise(promise, False)
-    elif promise[u'parent'] == current_branch:
-        promise_kept, error_message == check_promise(promise, True)
-
+    if promise_kept:
+        current_branch = git.current_branch()
+        if promise[u'child'] == current_branch:
+            promise_kept, error_message = check_promise(promise, False)
+        elif promise[u'parent'] == current_branch:
+            promise_kept, error_message == check_promise(promise, True)
+    else:
+        broken_promise(error_message)
 
 if promise_kept:
-    print "\nPromise was kept. Committing changes."
+    kept_promise()
 else:
-    print "\nPromise not kept. Changes will not be committed."
+    broken_promise(error_message)
