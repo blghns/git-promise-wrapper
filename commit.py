@@ -1,8 +1,7 @@
 from helpers import promise
 from helpers import git
 
-### Todo: Currently this function will only give error messages if the child branch is breaking its promise.
-### This should be improvied to include parent branch errors.
+
 def check_promise(promise, is_parent):
     promised_files = promise[u'files']
     promise_commit_hash = promise[u'hash']
@@ -21,10 +20,12 @@ def check_promise(promise, is_parent):
             return status, error_message
     return True, ''
 
+
 def check_parent_promise(file_name):
     if git.is_staged(file_name):
         return False, "%s is promised by a child branch. You cannot commit any changes to it." % file_name
     return True, ''
+
 
 def check_file(file_name, promised_lines, promised_lines_between, promise_commit_hash):
     print file_name
@@ -88,9 +89,11 @@ def check_ranges(edited_range, promised_range, file_name):
         return True, ''
     return False, "Line range %s in %s are not promised." % (edited_range, file_name)
 
+
 def broken_promise(error_message):
     print "\nPromise not kept. Changes will not be committed."
     print "Error Message: %s" % error_message
+
 
 def kept_promise():
         print "\nPromise was kept. Committing changes."
@@ -106,7 +109,7 @@ for promise in promises:
         if promise[u'child'] == current_branch:
             promise_kept, error_message = check_promise(promise, False)
         elif promise[u'parent'] == current_branch:
-            promise_kept, error_message == check_promise(promise, True)
+            promise_kept, error_message = check_promise(promise, True)
     else:
         broken_promise(error_message)
 

@@ -19,7 +19,7 @@ import helpers.git as git
 
 
 def check_promise_overlaps(promises, promise):
-    # TODO: implement this function
+    # TODO: implement this function - Steal check-promise from commit
     pass
 
 
@@ -41,6 +41,7 @@ def create_promise(args):
     if parent == "":
         raise Exception("Creating promise failed. Current branch has no name."
                         " If repo is just initialized, create an initial commit.")
+    # TODO: check if promise is allowed if in a promise branch (promise in a promsie)
     promise = {"hash": hash_str,
                "parent": parent,
                "child": args.newBranchName,
