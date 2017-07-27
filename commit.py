@@ -18,7 +18,7 @@ def check_promise(promise, is_parent):
             status, error_message = check_file(file_name, promised_lines, promised_lines_between, promise_commit_hash)
         if not status:
             return status, error_message
-    return True, ''
+    return True, error_message
 
 
 def check_parent_promise(file_name):
@@ -45,7 +45,7 @@ def check_file(file_name, promised_lines, promised_lines_between, promise_commit
                 status, error_message = check_line(line_edited[0], promised_lines, file_name)
                 if not status:
                     return False, error_message
-            elif not promised_lines_between == None:
+            elif not promised_lines_between is None:
                 line_edited = line_edited[0] + '-' + line_edited[1]
                 for promisedRange in promised_lines_between:
                     if not check_ranges(line_edited, promisedRange, file_name)[0]:
@@ -59,13 +59,13 @@ def check_file(file_name, promised_lines, promised_lines_between, promise_commit
             if not status:
                 return False, error_message
 
-    return True, ''
+    return True, error_message
 
 
 def check_line(line_edited, promised_lines, file_name):
     if not int(line_edited) in promised_lines:
         return False, "Line %s in %s is not promised." % (line_edited, file_name)
-    return True, ''
+    return True, 'Line %s in %s is promised by a child branch.' % (line_edited, file_name)
 
 
 def check_promised_range(line_edited, promised_ranges, file_name):
@@ -77,7 +77,7 @@ def check_promised_range(line_edited, promised_ranges, file_name):
         promised_end = int(promised_range.split("-")[1])
         if not promised_start - lined_edited <= 0 and promised_end - lined_edited >= 0:
             return False, "Line %s in %s is not promised." % (line_edited, file_name)
-    return True, ''
+    return True, "Line %s in %s is promised by a child branch." % (line_edited, file_name)
 
 
 def check_ranges(edited_range, promised_range, file_name):
@@ -86,7 +86,7 @@ def check_ranges(edited_range, promised_range, file_name):
     edited_start = int(edited_range.split("-")[0])
     edited_end = int(edited_range.split("-")[1])
     if promised_start - edited_start <= 0 <= promised_end - edited_end:
-        return True, ''
+        return True, "Line range %s in %s are promised in a child branch." % (edited_range, file_name)
     return False, "Line range %s in %s are not promised." % (edited_range, file_name)
 
 
@@ -109,7 +109,7 @@ for promise in promises:
         if promise[u'child'] == current_branch:
             promise_kept, error_message = check_promise(promise, False)
         elif promise[u'parent'] == current_branch:
-            promise_kept, error_message = check_promise(promise, True)
+            promise_kept, error_message = not check_promise(promise, True)[0]
     else:
         broken_promise(error_message)
 
