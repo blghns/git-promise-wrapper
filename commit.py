@@ -115,7 +115,8 @@ for promise in promises:
         if promise[u'child'] == current_branch:
             promise_kept, error_message = check_promise(promise, False)
         elif promise[u'parent'] == current_branch:
-            promise_kept, error_message = not check_promise(promise, True)[0]
+            promise_kept, error_message = check_promise(promise, True)
+            promise_kept = not promise_kept
     else:
         broken_promise(error_message)
 
