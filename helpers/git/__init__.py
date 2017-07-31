@@ -68,6 +68,6 @@ def merge(branch_name):
     sb.call(command)
 
 
-def delete_branch(branch):
+def delete_branch(branch_name):
     command ="git branch -D " + branch_name
     sb.call(branch)
