@@ -7,7 +7,7 @@ import clear
 
 class PromiseTester(unittest.TestCase):
     def test_1(self):
-        clear.remove_test_dir()
+        clear.remove_test_dir("promiseTest/")
         os.makedirs("promiseTest")
         os.chdir("promiseTest")
         git.init()

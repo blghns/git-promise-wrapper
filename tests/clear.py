@@ -3,8 +3,7 @@ import stat
 import shutil
 
 
-def remove_test_dir():
-    directory = "promiseTest/"
+def remove_test_dir(directory):
     if os.path.exists(directory):
         def remove_readonly(func, path, _):
             # Clear the readonly bit and reattempt the removal

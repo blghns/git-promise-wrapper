@@ -35,21 +35,25 @@ def commit(commit_message):
     command = "git commit -m".split() + ["\"" + commit_message + "\""]
     sb.call(command)
 
+
 def commit_with_args(args):
     command = ["git"] + ["commit"] + args
     sb.call(command)
+
 
 def current_branch():
     command = "git branch"
     name = next(branch_name for branch_name in sb.call(command).split("\n") if branch_name[0] == "*")
     return name.split(" ")[1]
 
+
 def is_staged(file_name):
     command = "git diff --name-only --cached"
-    staged_files =  sb.call(command).split()
+    staged_files = sb.call(command).split()
     if file_name in staged_files:
         return True
     return False
+
 
 def get_lines_edited(promise_commit_hash, file_name):
     command = "git diff --staged --unified=0 %s %s" % (promise_commit_hash, file_name)
@@ -59,3 +63,11 @@ def get_lines_edited(promise_commit_hash, file_name):
     return a2
 
 
+def merge(branch_name):
+    command = "git merge " + branch_name
+    sb.call(command)
+
+
+def delete_branch(branch):
+    command ="git branch -D " + branch_name
+    sb.call(branch)
