@@ -59,7 +59,9 @@ def write_promise(args):
             promises.append(promise)
     else:
         promises = [promise]
+    write_promises(promises)
+
+
+def write_promises(promises):
     with open('.promise', 'w') as promise_file:
         json.dump(promises, promise_file)
-
-
