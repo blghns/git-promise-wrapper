@@ -10,9 +10,9 @@ import helpers.promise as promise
 
 def fulfill():
     parser = argparse.ArgumentParser(description='Fulfill a promise, merge it back to its parent.')
-    parser.add_argument('promiseBranch', metavar='branch', dest="branch",
+    parser.add_argument('branch', metavar="branch",
                         help='Name of the promise branch, if promise branch exist, merge the branch.\n')
-    parser.add_argument('-d', metavar='delete', dest="delete", action="store_const", const=True, default=False,
+    parser.add_argument('-d', dest="delete", action="store_const", const=True, default=False,
                         help='Delete the branch if this option is given after merge.\n')
     parsed_args = parser.parse_args()
     git.merge(parsed_args.branch)
@@ -27,5 +27,5 @@ def fulfill():
         git.add(".promise")
         git.commit("Promise updated, removed branch " + parsed_args.branch)
 
-if __name__ == "main":
+if __name__ == "__main__":
     fulfill()
