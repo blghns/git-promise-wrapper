@@ -1,4 +1,3 @@
-from helpers import promise
 from helpers import git
 import sys
 
@@ -17,8 +16,8 @@ def check_promise(promise, is_parent):
             continue
         else:
             status, error_message = check_file(file_name, promised_lines, promised_lines_between, promise_commit_hash)
-        if not status:
-            return status, error_message
+            if not status:
+                return status, error_message
     return True, error_message
 
 
@@ -56,7 +55,7 @@ def check_file(file_name, promised_lines, promised_lines_between, promise_commit
                     if not check_ranges(line_edited, promisedRange, file_name)[0]:
                         return False, error_message
             else:
-                line_edited = line_edited[0] + '-' + str(int(line_edited[0])+int(line_edited[1]))
+                line_edited = line_edited[0] + '-' + str(int(line_edited[0]) + int(line_edited[1]))
                 return False, "Range %s in %s is not promised." % (line_edited, file_name)
 
         else:
@@ -100,27 +99,36 @@ def broken_promise(error_message):
     print "Error Message: %s" % error_message
 
 
-def kept_promise():
-        print "\nPromise was kept. Committing changes."
-        #git.commit_with_args(sys.argv[1:])
-print "Checking if promise was kept..."
+def kept_promise(args):
+    print "\nPromise was kept. Committing changes."
+    git.commit_with_args(args)
 
-promises = promise.read_promise()
-promise_kept = True
-error_message = None
 
-for promise in promises:
+def checking_and_committing(args=sys.argv[1:]):
+    from helpers import promise
+    print "Checking if promise was kept..."
+    promises = promise.read_promise()
+    promise_kept = True
+    error_message = None
+    current_branch = git.current_branch()
+    for promise in promises:
+        if promise_kept:
+
+            if promise[u'child'] == current_branch:
+                promise_kept, error_message = check_promise(promise, False)
+            elif promise[u'parent'] == current_branch:
+                promise_kept, error_message = check_promise(promise, True)
+                promise_kept = not promise_kept
+        else:
+            broken_promise(error_message)
+
     if promise_kept:
-        current_branch = git.current_branch()
-        if promise[u'child'] == current_branch:
-            promise_kept, error_message = check_promise(promise, False)
-        elif promise[u'parent'] == current_branch:
-            promise_kept, error_message = check_promise(promise, True)
-            promise_kept = not promise_kept
+        kept_promise(args)
+        return True
     else:
         broken_promise(error_message)
+        return False
 
-if promise_kept:
-    kept_promise()
-else:
-    broken_promise(error_message)
+
+if __name__ == '__main__':
+    checking_and_committing()

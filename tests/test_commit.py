@@ -26,7 +26,8 @@ class PromiseTester(unittest.TestCase):
         with open("first", "w") as text:
             text.write("1\n2-edited\n3\n4\n5\n6\n")
         current_hash = git.current_hash()
-        result = commit.checking_and_commiting("-m 'this commit should not work'".split())
+        git.add("first")
+        result = commit.checking_and_committing("-m 'this commit should not work'".split())
         new_hash = git.current_hash()
 
         self.assertEqual(False, result, "Parent shouldn't be able to commit.")
