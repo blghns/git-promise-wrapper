@@ -31,10 +31,10 @@ def check_parent_promise(file_name):
 def check_file(file_name, promised_lines, promised_lines_between, promise_commit_hash):
     error_message = ''
     lines_edited = git.get_lines_edited(promise_commit_hash, file_name)
-    print file_name
-    print promised_lines
-    print promised_lines_between
-    print "Edited Lines: %s" % str(lines_edited)
+    # print file_name
+    # print promised_lines
+    # print promised_lines_between
+    # print "Edited Lines: %s" % str(lines_edited)
     if lines_edited == []:
         return True, ''
     if promised_lines == None and promised_lines_between == None:
