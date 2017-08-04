@@ -60,6 +60,7 @@ def check_file(file_name, promised_lines, promised_lines_between, promise_commit
                 return False, "Range %s in %s is not promised." % (line_edited, file_name)
 
         else:
+            status_indiv_lines = False
             if promised_lines is not None:
                 status_indiv_lines, error_message = check_line(line_edited, promised_lines, file_name)
             status_betw_lines, error_message2 = check_promised_range(line_edited, promised_lines_between, file_name)

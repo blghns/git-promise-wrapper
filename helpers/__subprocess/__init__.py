@@ -10,6 +10,6 @@ def call(command):
                                stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE)
     output, error = process.communicate()
-    if error:
-        raise error
+    if error and process.returncode != 0:
+        raise ValueError(error)
     return output

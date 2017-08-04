@@ -70,4 +70,9 @@ def merge(branch_name):
 
 def delete_branch(branch_name):
     command ="git branch -D " + branch_name
-    sb.call(branch)
+    sb.call(command)
+
+
+def checkout(branch_name):
+    command = "git checkout " + branch_name
+    sb.call(command)
