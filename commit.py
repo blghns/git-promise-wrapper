@@ -34,9 +34,9 @@ def check_file(file_name, promised_lines, promised_lines_between, promise_commit
     # print promised_lines
     # print promised_lines_between
     # print "Edited Lines: %s" % str(lines_edited)
-    if lines_edited == []:
+    if len(lines_edited) == 0:
         return True, ''
-    if promised_lines == None and promised_lines_between == None:
+    if promised_lines is None and promised_lines_between is None:
         return False, "Lines %s in %s are not promised." % (str(promised_lines), str(promised_lines_between))
 
     for line_edited in lines_edited:
@@ -44,11 +44,12 @@ def check_file(file_name, promised_lines, promised_lines_between, promise_commit
         if "," in line_edited:
             line_edited = line_edited.split(',')
             if int(line_edited[1]) == 0:
-                status, error_message = check_line(line_edited[0], promised_lines, file_name)
-                if not status:
-                    status, error_message = check_promised_range(line_edited[0], promised_lines_between, file_name)
+                if promised_lines is not None:
+                    status, error_message = check_line(line_edited[0], promised_lines, file_name)
                     if not status:
-                        return False, error_message
+                        status, error_message = check_promised_range(line_edited[0], promised_lines_between, file_name)
+                        if not status:
+                            return False, error_message
             elif not promised_lines_between is None:
                 line_edited = line_edited[0] + '-' + line_edited[1]
                 for promisedRange in promised_lines_between:
@@ -59,7 +60,8 @@ def check_file(file_name, promised_lines, promised_lines_between, promise_commit
                 return False, "Range %s in %s is not promised." % (line_edited, file_name)
 
         else:
-            status_indiv_lines, error_message = check_line(line_edited, promised_lines, file_name)
+            if promised_lines is not None:
+                status_indiv_lines, error_message = check_line(line_edited, promised_lines, file_name)
             status_betw_lines, error_message2 = check_promised_range(line_edited, promised_lines_between, file_name)
             if not status_indiv_lines and not status_betw_lines:
                 return False, error_message + error_message2
@@ -75,7 +77,7 @@ def check_line(line_edited, promised_lines, file_name):
 
 
 def check_promised_range(line_edited, promised_ranges, file_name):
-    if promised_ranges == None:
+    if promised_ranges is None:
         return False, "Line %s in %s is not promised." % (line_edited, file_name)
     for promised_range in promised_ranges:
         line_edited = int(line_edited)
