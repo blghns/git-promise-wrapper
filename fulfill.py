@@ -21,9 +21,13 @@ def fulfill():
         all_promises = promise.read_promise()
         new_promises = []
         for the_promise in all_promises:
-            if the_promise.child != parsed_args.branch:
+            if the_promise["child"] != parsed_args.branch:
                 new_promises.append(the_promise)
-        promise.write_promises(new_promises)
+        if len(new_promises) == 0:
+            import os
+            os.remove(".promise")
+        else:
+            promise.write_promises(new_promises)
         git.add(".promise")
         git.commit("Promise updated, removed branch " + parsed_args.branch)
 
