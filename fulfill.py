@@ -31,5 +31,7 @@ def fulfill():
         git.add(".promise")
         git.commit("Promise updated, removed branch " + parsed_args.branch)
 
+    print "Promise fulfilled."
+
 if __name__ == "__main__":
     fulfill()
