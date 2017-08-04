@@ -112,6 +112,9 @@ def kept_promise(args):
 def checking_and_committing(args=sys.argv[1:]):
     from helpers import promise
     print "Checking if promise was kept..."
+    if not git.promise_exists():
+        kept_promise(args)
+        return True
     promises = promise.read_promise()
     promise_kept = True
     error_message = None
