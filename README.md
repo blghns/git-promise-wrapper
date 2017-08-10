@@ -3,6 +3,9 @@
 ### Checkout the gui for creating promises
 https://github.com/seymourr1/Git-Vow-Electron
 
+## Video
+[![IMAGE ALT TEXT HERE](https://raw.githubusercontent.com/blghns/git-promise-wrapper/master/images/git-promise-tutorial.png)](https://drive.google.com/open?id=0BxXnQihREm1PVmhsRk41NnluLU0)
+
 ## Install
 ## Windows
 clone the repo in your C:/Users/username/git-promise-wrapper folder
