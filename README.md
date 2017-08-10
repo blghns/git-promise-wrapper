@@ -1,5 +1,8 @@
 # git-promise-wrapper
 
+### Checkout the gui for creating promises
+https://github.com/seymourr1/Git-Vow-Electron
+
 ## Install
 ## Windows
 clone the repo in your C:/Users/username/git-promise-wrapper folder
